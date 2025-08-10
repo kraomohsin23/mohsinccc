@@ -1,0 +1,473 @@
+/* General Styles */
+* {
+    margin-block-start: 0px;
+    margin-block-end: 0px;
+}
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    transition: margin-left 0.3s ease;
+    background-color: rgb(128 52 87);
+    font-size: 25px;
+    color: white;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    top: 0;
+    left: -250px; /* Hidden initially */
+    background-color: #531237;
+    color: white;
+    overflow-x: hidden;
+    transition: 0.3s ease;
+    padding-top: 3px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.sidebar a {
+    padding: 12px 20px;
+    text-decoration: none;
+    font-size: 12px;
+    color: white;
+    display: block;
+    border: 2px solid orange;
+    text-align: center;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar a:hover {
+    background-color: #fff;
+    color: #000;
+}
+
+/* Toggle Button Styles */
+.toggle-btn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    position: fixed;
+    top: -10px;
+}
+
+.toggle-btn:hover {
+    background-color: #08df49;
+    color:pink;
+}
+
+/* Main Content */
+.main-content {
+    margin-left: 0; /* Will shift when the sidebar is open */
+    /* padding-left: 20px;
+    padding-right: 20px; */
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .sidebar {
+        width: 200px; /* Adjust sidebar width for smaller screens */
+        left: -200px; /* Hidden initially for smaller screens */
+    }
+}
+
+
+button {
+    background-color: #f44336; /* Red */
+    color: white;
+    border: none;
+    padding: 15px;
+    margin: 3px 0;
+    font-size: 8px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.yes45-button {
+background-color: #dc3545; /* Red */
+color: #fff;
+}
+
+.no-button {
+background-color: green; /* Green */
+color: #fff;
+}
+
+/* for adding click event on no45 button */
+.no45-button {
+background-color: green; 
+color: white;
+}
+
+button:hover {
+    background-color: #f031d0; 
+}
+.meter-box {
+    display: inline-block;
+    background-color: #ffeb3b;
+    color: white;
+    border: 2px solid red;
+    border-radius: 8px;
+    margin: 10px;
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.meter-box:nth-child(10n + 1) { background: #ff5733; }  /* Red-Orange */
+.meter-box:nth-child(10n + 2) { background: #33c4ff; }  /* Sky Blue */
+.meter-box:nth-child(10n + 3) { background: #ff33aa; }  /* Pink */
+.meter-box:nth-child(10n + 4) { background: #28a745; }  /* Green */
+.meter-box:nth-child(10n + 5) { background: #ffcc00; color: #333; } /* Yellow (Dark text for contrast) */
+.meter-box:nth-child(10n + 6) { background: #673ab7; }  /* Purple */
+.meter-box:nth-child(10n + 7) { background: #ff6600; }  /* Orange */
+.meter-box:nth-child(10n + 8) { background: #17a2b8; }  /* Teal */
+.meter-box:nth-child(10n + 9) { background: #dc3545; }  /* Red */
+.meter-box:nth-child(10n + 10) { background: #6c757d; } /* Gray */
+
+.meter-box:hover {
+transform: scale(1.05);
+cursor: pointer;
+background-color: #000;
+color: #fff;
+}
+
+.confirm-dialog {
+position: fixed;
+color: #ffc107;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+background-color: #2fa17c;
+border: 6px solid #000;
+padding: 20px;
+border-radius: 61px;
+display: none; /* Initially hidden */
+}
+
+.confirm-dialog p {
+margin-bottom: 15px;
+}
+
+.simple table {
+    background-color: #08df49;
+    font-size: 12px;
+}
+
+
+
+input {
+    width: 300px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    font-size: 24px; /* Big font */
+    border: none;
+    border-radius: 30px; /* Rounded corners */
+    background-color: #ffe066; /* Bright yellow */
+    color: #333; /* Dark text color */
+    text-align: center; /* Centered text */
+}
+
+input::placeholder {
+    color: #888; /* Placeholder color */
+}
+
+input:focus {
+    outline: none;
+    background-color: #ffcc00; /* Change background on focus */
+    color: white; /* Change text color on focus */
+}
+table {
+    width: 100%;
+}
+tr {
+    background-color: #566ddb; /* Applies to all rows */
+    text-align: center;
+}
+
+.dailyentry{
+    background-color: #db8756; /* Applies to all rows */
+    text-align: center;
+    font-size: x-small;
+}
+#topMeters {
+    justify-content: center;
+    cursor: pointer;
+    margin-bottom: 20px;
+    margin-top: 42px;
+
+    
+}
+tr:nth-child(even) {
+    background-color:rgb(107, 7, 44); /* Applies to even rows */
+}
+
+#topMeters td:nth-child(even) {
+    background-color: #077734; /* Applies to even rows */
+}
+#topMeters td:hover {
+    background-color: pink; /* Applies to even rows */
+}
+
+.ptime {
+    margin-top: -7px;
+    font-size: 11px;
+}
+
+
+.close-box {
+    background-color: rgb(243, 105, 220);
+    color: black;
+    border: 5px solid white;
+    display: inline-block;
+    margin: 8px;
+    padding: 30px 30px 30px 30px;
+}
+/* Main Wrapper */
+.wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Space between boxes */
+    max-width: 1200px;
+    justify-content: center;
+}
+/* Colorful Boxes */
+.box {
+    width: 250px;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    color: white; /* White text for contrast */
+    font-weight: bold;
+    font-size: 18px;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Repeating Solid Colors */
+.box:nth-child(10n + 1) { background: #ff5733; }  /* Red-Orange */
+.box:nth-child(10n + 2) { background: #33c4ff; }  /* Sky Blue */
+.box:nth-child(10n + 3) { background: #ff33aa; }  /* Pink */
+.box:nth-child(10n + 4) { background: #28a745; }  /* Green */
+.box:nth-child(10n + 5) { background: #ffcc00; color: #333; } /* Yellow (Dark text for contrast) */
+.box:nth-child(10n + 6) { background: #673ab7; }  /* Purple */
+.box:nth-child(10n + 7) { background: #ff6600; }  /* Orange */
+.box:nth-child(10n + 8) { background: #17a2b8; }  /* Teal */
+.box:nth-child(10n + 9) { background: #dc3545; }  /* Red */
+.box:nth-child(10n + 10) { background: #6c757d; } /* Gray */
+
+/* Hover Effect */
+.box:hover {
+    transform: translateY(-5px);
+    box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+}
+
+.btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 20px;
+    background: #3498db;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.3s ease;
+}
+
+.btn:hover {
+    background: #2980b9;
+}
+
+.box ul li {
+    line-height: 1.6;
+    text-align: left;
+    font-size: 20px;
+    margin-left: -29px;
+}
+.box p {
+    font-size: 15px;
+}
+.liclosed {
+    font-size: 16px;
+    color: #ff0000;
+    background-color: #fff;
+}
+
+.moamount {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: visible;
+    font-size: 17px;
+    /* color: #000; */
+}
+
+
+
+.moamount thead {
+    background-color: #ece7ea;
+}
+
+.moamount thead th {
+    font-size: 11px;
+}
+
+.moamount tr:nth-child(odd) {
+    background-color: #e61d59; /* Soft Lavender */
+    /* color: #333333; */
+}
+
+.moamount tr:nth-child(even) {
+    background-color: #060683; /* Light Gold */
+    /* color: #333333; */
+}
+
+
+/* Container for the graph */
+#tgraph2 {
+display: flex;
+justify-content: center;
+align-items: flex-end;
+gap: 15px;
+padding: 20px;
+background-color: #f8f9fa;
+border-radius: 10px;
+box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#tgraph3 {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 3px;
+    background-color: #fff;
+    padding-top: 11px;
+    padding-bottom: 120px;
+    }
+/*Vertical Bar Start Here */
+#tgraph3v {
+    background-color: #fff;
+    padding-top: 11px;
+    padding-bottom: 120px;
+    }
+.graph-barv {
+    border-radius: 5px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    }  
+.bar-labelv {
+    font-size: 11px;
+    color: white;
+    padding: 3px;
+    background: #000;
+    border-radius: 5px;
+    position: absolute;
+    left: 3px;
+    top:8px;
+    }
+.bar-label3v {
+    font-size: 11px;
+    color: #000;
+    padding: 3px;
+    background: #fff;
+    border-radius: 5px;
+    position: absolute;
+    top:8px;
+    }
+
+/*Vertical Bar End Here*/
+.theadc {
+    color: #531237;
+}
+.tdtop {
+    margin-bottom: 20px;
+}
+
+/* Individual bars */
+.graph-bar {
+display: flex;
+align-items: flex-end;
+justify-content: center;
+width: 25px;
+border-radius: 5px;
+transition: transform 0.3s ease, box-shadow 0.3s ease;
+position: relative;
+}
+
+/* Hover Effect */
+.graph-bar:hover {
+transform: scale(1.1);
+box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Labels for bars */
+.bar-label2 {
+/* writing-mode: vertical-rl; */
+text-align: center;
+font-size: 14px;
+font-weight: bold;
+color: rgb(163, 30, 30);
+padding: 5px;
+/* background: #000; */
+border-radius: 5px;
+position: absolute;
+bottom: -20px;
+}
+
+.bar-label3 {
+    /* writing-mode: vertical-rl; */
+    text-align: center;
+    font-size: 11px;
+    font-weight: bold;
+    color: #000;
+    /* padding: 5px; */
+    /* background: orange;  */
+    border-radius: 5px;
+    position: absolute;
+    margin-bottom: 11px;
+    }
+
+.bar-label {
+writing-mode: vertical-rl;
+text-align: center;
+font-size: 11px;
+font-weight: bold;
+color: white;
+padding: 3px;
+background: #000;
+border-radius: 5px;
+position: absolute;
+/* bottom: -5px; */
+margin-bottom: 12px;
+}
+
+.details { display: none; }
+.toggle-btn { cursor: pointer; color: blue; text-decoration: underline; }
+
+canvas {
+    background-color: #fff;
+    /* width: 100%; */
+    padding-left: 5px;
+}
+/* Beautiful Select Styling */
+select#selmf,#selmt,#selmet {
+    /* Basic Size & Shape 
+    width: 200px;  */
+    padding: 10px 15px;
+    border: 1px solid #000;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 16px;
+    color: #413333;
+    cursor: pointer;
+
+  }
+  
