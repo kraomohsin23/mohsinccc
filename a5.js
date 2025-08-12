@@ -104,26 +104,44 @@ function generateMeters() {
   //this method print all meters at topMeters
   let a = document.getElementById("topMeters");
   let meters = JSON.parse(localStorage.getItem(metersStorage)) || [];
+  let msum = 0;
+  let csum = 0;
+  let nmccsum = 0;
 
   let b  = "<table><tr>";
   meters.forEach((meterName) => {
     const result = getLatestMonthAndAmount(meterName);
+    if(meterName.startsWith("CC")) {
+      //sum for cc
+      csum = result.amount + csum;
+      console.log(result.month);
+      console.log(result.monthNames);
+      let nmonthname = getNextMonthName(result.monthNames,new Date().getFullYear()%100);
+      console.log(nmonthname);
+      let hjs = JSON.parse(localStorage.getItem(meterName+"_"+nmonthname)) || [];
+      //JSON.parse(localStorage.getItem("CCM_Aug 25")) || [];
+      console.log(hjs);
+      
+      let nhb1 = hjs.length > 0 ?  hjs[hjs.length -1].units : 0;
+      console.log(nhb1);
+      nmccsum = nhb1 + nmccsum;
+
+
+    }
+    else {
+      //sum for msum
+      msum = result.amount + msum;
+    }
     b += `<td onclick="showMonthsForMeter('${meterName}')">${meterName} <br>${result.month} ${result.amount.toLocaleString()}</td>`;
-
-
-    //get last month name
-    // let lastmonthname = allMonths[allMonths.length -2];
-    // let aa = meterName + "_" + lastmonthname;
-    // let h = allBills.filter((mml) => mml.tid==aa); 
-    // if(h.length > 0 ){
-    //   b += `<td onclick="showMonthsForMeter('${meterName}')">${meterName} <br>${lastmonthname.slice(0,3)} ${h[0].amount.toLocaleString()}</td>`;
-    // }
-    // else {
-    //   b += `<td onclick="showMonthsForMeter('${meterName}')">${meterName}</td>`;
-    // }
-    //b += `<td onclick="showMonthsForMeter('${meterName}')">${meterName} <br> ${h[0].amount.toLocaleString()}</td>`;
   }); 
-  b += "</tr></table>";
+  b += "</tr>";
+  b += "<tr><td>Total</td><td>Meter<br>" + msum.toLocaleString() + "</td><td></td>";
+  b += "<td>CC<br>" + csum.toLocaleString() + "</td>";
+  b += "<td>Next CC<br>" + nmccsum.toLocaleString() + "</td>";
+  b += "</tr>";
+  b += "</table>";
+  //b += "this is from mohsin rao csum = " + csum + " and for msum = " + msum;
+  //b += "the next month cc sum is " + nmccsum;
   a.innerHTML = b;
 }
 
@@ -146,11 +164,13 @@ function getLatestMonthAndAmount(meterName) {
   // Extract month name from billDate
   const date = new Date(latestBill.billDate);
   const monthName = date.toLocaleString('default', { month: 'long' });
+  const monthNames = date.toLocaleString('default', { month: 'short' });
 
   return {
     meter: meterName,
     month: monthName,
     amount: latestBill.amount
+    ,monthNames : monthNames
   };
 }
 //end chatGpt 16 Jun 25 7:41 PM
