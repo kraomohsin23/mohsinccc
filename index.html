@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -110,3 +111,117 @@
 
 </body>
 </html>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="a.css">
+    <title>Daily Meter Reading</title>
+    <script src="a5.js"></script>
+  <script src="html2pdf.bundle.min.js"></script>
+
+
+</head>
+<body>
+  <script>
+    // window.onload = function() {
+    //     html2pdf("<h1>i am a good boy, thank you for visting</h1>", {
+    //         margin: 10,
+    //         filename: 'output.pdf',
+    //         html2canvas: {
+    //             scale: 2,
+    //             backgroundColor: '#000' /* Set black background */
+    //         },
+    //         jsPDF: {
+    //             unit: 'mm',
+    //             format: 'a4',
+    //             orientation: 'portrait'
+    //         }
+    //     });
+    // };
+</script>
+  <script>
+        //html2pdf("<h1 style='color:aqua;'>this is mohsin rao</h1>");
+  </script>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="sidebar">
+        <button>Meter Management</button>
+        <a href="#" onclick="displayMeters(1)">Meters</a>
+        <a href="#" onclick="showForm()">Create</a>
+        <a href="#" onclick="displayMetersP(meters,'meter',1)">Delete</a>
+        <button>Month Management</button>
+        <a href="#" onclick="showMonths(1)">Months</a>
+        <a href="#" onclick="showCreateMonthForm(1)">Create</a>
+        <a href="#" onclick="displayMetersP(allMonths,'month',1)">Delete</a>
+        <button>Bill Management</button>
+        <a href="#"  onclick="viewBills()">🧾 View Bills</a>
+        <a href="#"  onclick="viewAmount()">Amount</a>
+        <a href="#"  onclick="viewCreditCard(1)">Credit Card</a>
+        <button>Data Analytics</button>
+        <a href="#"  onclick="analytics()">Comparison</a>
+        <button>Data Management</button>
+        <a href="#" onclick="exportData()">Export </a>
+        <a href="#" onclick="document.getElementById('importInput').click()">📥 Import Data</a>
+        <input type="file" id="importInput" hidden accept=".json" onchange="importData(event)">
+
+        <!-- <a href="#contact">Contact</a> -->
+    </div>
+
+
+    <!-- Toggle Button -->
+    <button class="toggle-btn" onclick="hidesidebar()">☰ </button>
+    <div id="topMeters">
+      
+      <script>generateMeters();
+        //html2pdf("<h1>this is mohsin rao</h1>");
+      </script>       
+    </div>
+
+    
+
+    <!-- Main Content -->
+    <div id="tgraphs">
+    </div>
+    
+    <div id="content" class="main-content"></div>
+    <div id="content2" class="main-content"></div>
+
+      <!-- Delete Confirmation Dialog -->
+  <div class="confirm-dialog" id="confirmationDialog">
+    <p id="arrayTypeText"></p>
+    <p>Are you sure you want to delete?</p>
+    <div class="buttons">
+      <button class="yes45-button">Yes</button>
+      <button class="no45-button">No</button>
+    </div>
+  </div>
+  <div id="tdebug" class="confirm-dialog">
+    <p id="td1">.......</p>
+    <p id="td2"></p>
+    <p id="td3"></p>
+    <p id="td4"></p>
+  </div>
+  <div id='gltable' class='moamount'></div>
+  <p id="td5"></p>
+  <p id="td6"></p>
+  <p id="td7"></p>
+
+  <div id="weeklyDetails"></div>
+
+<script>
+  // hidesidebar();
+  // showMonthsForMeter('Gas');
+  // hidesidebar();
+  // let a = document.getElementById("content");
+  // let b = document.getElementById("tgraphs");
+  // a = a + b ;
+  // html2pdf(document.getElementById("tgraphs"));
+  // html2pdf(document.getElementById("content2"));
+</script>
+
+</body>
+</html>
+>>>>>>> 3a1f10a7a4a94bbae7b837deddb1d007bbe9c097
