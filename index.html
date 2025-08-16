@@ -11,28 +11,6 @@
 
 </head>
 <body>
-  <!-- <h1>I am a good boy. Thank you for visiting.</h1> -->
-  <!-- <h1>I am a good boy. Thank you for visiting. this is a test2</h1> -->
-  <script>
-    // window.onload = function() {
-    //     html2pdf("<h1>i am a good boy, thank you for visting</h1>", {
-    //         margin: 10,
-    //         filename: 'output.pdf',
-    //         html2canvas: {
-    //             scale: 2,
-    //             backgroundColor: '#000' /* Set black background */
-    //         },
-    //         jsPDF: {
-    //             unit: 'mm',
-    //             format: 'a4',
-    //             orientation: 'portrait'
-    //         }
-    //     });
-    // };
-</script>
-  <script>
-        //html2pdf("<h1 style='color:aqua;'>this is mohsin rao</h1>");
-  </script>
 
     <!-- Sidebar -->
     <div id="sidebar" class="sidebar">
@@ -54,8 +32,6 @@
         <a href="#" onclick="exportData()">Export </a>
         <a href="#" onclick="document.getElementById('importInput').click()">📥 Import Data</a>
         <input type="file" id="importInput" hidden accept=".json" onchange="importData(event)">
-
-        <!-- <a href="#contact">Contact</a> -->
     </div>
 
 
@@ -63,9 +39,7 @@
     <button class="toggle-btn" onclick="hidesidebar()">☰ </button>
     <div id="topMeters">
       
-      <script>generateMeters();
-        //html2pdf("<h1>this is mohsin rao</h1>");
-      </script>       
+      <script>generateMeters();      </script>       
     </div>
 
     
@@ -98,17 +72,6 @@
   <p id="td7"></p>
 
   <div id="weeklyDetails"></div>
-
-<script>
-  // hidesidebar();
-  // showMonthsForMeter('Gas');
-  // hidesidebar();
-  // let a = document.getElementById("content");
-  // let b = document.getElementById("tgraphs");
-  // a = a + b ;
-  // html2pdf(document.getElementById("tgraphs"));
-  // html2pdf(document.getElementById("content2"));
-</script>
 
 </body>
 </html>
