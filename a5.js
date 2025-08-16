@@ -15,7 +15,6 @@ let amount = 0;
 let nodays = "do not know";
 let totUnits = 0;
 let perdayavg = 0;
-//let mncolors = ['#FF5733', '#FFC300', '#36A20d', '#36AffB', '#3f00EB', '#36ffEB']; 
 let mncolors = [
   '#FF6F61',  // softer red-orange, good contrast
   '#FFD54F',  // warm yellow, excellent contrast
