@@ -1466,8 +1466,8 @@ function viewAmount() {
   let ztot = 0;
   let billsHTML = `<h2>Amount</h2><p class='ptime'>${formatDateTime(new Date())}</p>`;
   billsHTML += "<div class='moamount'><table><tr style='background:Red'><th>Month</th><th>Total</th><th>Adnan</th><th>Bhai</th><th>Zaki</th></tr>";
-  gltablestr += "<div class='moamount'><table><tr style='background:Red'><th>Month</th><th>Gas</th><th>KE1</th><th>KE2</th><th>Total</th><th>Head/2</th><th>Head/3</th></tr>";
-  billsHTML3 = "<table class='moamount'><tr style='background:Red'><th>Month</th><th>Total</th><th>Head/2</th><th>Head/3</th></tr>";
+  gltablestr += "<div class='moamount'><table><tr style='background:Red'><th>Month</th><th>Gas</th><th>KE1</th><th>KE2</th><th>Total</th><th>Head/3</th><th>Head/2</th></tr>";
+  billsHTML3 = "<table class='moamount'><tr style='background:Red'><th>Month</th><th>Total</th><th>Head/3</th><th>Head/2</th></tr>";
   let tmleng = allMonths.length -2;
   allMonths.forEach((monthName,index) => {
     // console.log("this is allmonths index : " + index);
@@ -1491,8 +1491,8 @@ function viewAmount() {
       
       if(tota > 0) {
         gltablestr += "<td>"+tota.toLocaleString()+"</td>";
-        gltablestr += "<td>"+(Math.round(tota/2)).toLocaleString()+"</td>";
         gltablestr += "<td>"+(Math.round(tota/3)).toLocaleString()+"</td>";
+        gltablestr += "<td>"+(Math.round(tota/2)).toLocaleString()+"</td>";
         gltablestr += "</tr>";
         billsHTML2 += "Total Amount " + monthName + " " + tota.toLocaleString() + "<br>";
         billsHTML2 += "Head/3 : " + (Math.round(tota/3)).toLocaleString() + "<br>";
@@ -1502,7 +1502,7 @@ function viewAmount() {
         ftot = ftot + Math.round(tota/3);
         fftot = tota + fftot;
         billsHTML += "<td>" + (Math.round(tota)).toLocaleString() + "</td><td>" + bbb + "</td><td>" + bbb + "</td><td>" + bbb + "</td></tr>";
-        billsHTML3 += "<td>" + (Math.round(tota)).toLocaleString() + "</td><td>" + (Math.round(tota/2)).toLocaleString() + "</td><td>" + (Math.round(tota/3)).toLocaleString() + "</td></tr>";
+        billsHTML3 += "<td>" + (Math.round(tota)).toLocaleString() + "</td><td>" + (Math.round(tota/3)).toLocaleString() + "</td><td>" + (Math.round(tota/2)).toLocaleString() + "</td></tr>";
       }
     }
   });
@@ -1529,7 +1529,7 @@ function viewAmount() {
   billsHTML += "<tr style='background:darkgreen'><th>Total Payment</th><th></th><th>" + (atot).toLocaleString() + "<th>" + (btot).toLocaleString() + "</th><th>" + (ztot).toLocaleString() + "</th></tr>";
   billsHTML += "<tr style='background:Black'><th>Balance</th><th></th><th>" + (ftot - atot).toLocaleString() + "<th>" + (ftot - btot).toLocaleString() + "</th><th>" + (ftot - ztot).toLocaleString() + "</th></tr>";
   billsHTML += "</table></div>";
-  billsHTML3 += "<tr style='background:Red'><th>Total Bill</th><th>" + fftot.toLocaleString() + "<th>" + (fftot2).toLocaleString() + "</th><th>" + (fftot3).toLocaleString() + "</th></tr>";
+  billsHTML3 += "<tr style='background:Red'><th>Total Bill</th><th>" + fftot.toLocaleString() + "<th>" + (fftot3).toLocaleString() + "</th><th>" + (fftot2).toLocaleString() + "</th></tr>";
   billsHTML3 += "<tr style='background:Black'><th>&nbsp;</th><th>&nbsp;<th>&nbsp;</th><th>&nbsp;</th></tr>";
   billsHTML3 += "<tr style='background:darkgreen'><th>Per</th><th>Person</th><th>Total</th><th>Bill/2</th><th></tr>";
   billsHTML3 += "<tr style='background:red'><th>Person</th><th>Payment</th><th>Head/2</th><th>Balance</th><th></tr>";
