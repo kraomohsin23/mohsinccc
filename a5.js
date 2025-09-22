@@ -1526,8 +1526,8 @@ function viewAmount() {
   let fftot3 = Math.round(fftot/3);
   billsHTML += "<tr></tr>";
   billsHTML += "<tr style='background:Red'><th>Total Bill</th><th>"+ fftot.toLocaleString() +"</th><th>" + ftot.toLocaleString() + "<th>" + ftot.toLocaleString() + "</th><th>" + ftot.toLocaleString() + "</th></tr>";
-  billsHTML += "<tr style='background:darkgreen'><th>Total Payment</th><th></th><th>" + (atot).toLocaleString() + "<th>" + (btot).toLocaleString() + "</th><th>" + (ztot).toLocaleString() + "</th></tr>";
-  billsHTML += "<tr style='background:Black'><th>Balance</th><th></th><th>" + (ftot - atot).toLocaleString() + "<th>" + (ftot - btot).toLocaleString() + "</th><th>" + (ftot - ztot).toLocaleString() + "</th></tr>";
+  billsHTML += "<tr style='background:darkgreen'><th>Total Payment</th><th>"+(atot+btot+ztot).toLocaleString()+"</th><th>" + (atot).toLocaleString() + "<th>" + (btot).toLocaleString() + "</th><th>" + (ztot).toLocaleString() + "</th></tr>";
+  billsHTML += "<tr style='background:Black'><th>Balance</th><th>"+(fftot-(atot+btot+ztot)).toLocaleString()+"</th><th>" + (ftot - atot).toLocaleString() + "<th>" + (ftot - btot).toLocaleString() + "</th><th>" + (ftot - ztot).toLocaleString() + "</th></tr>";
   billsHTML += "</table></div>";
   billsHTML3 += "<tr style='background:Red'><th>Total Bill</th><th>" + fftot.toLocaleString() + "<th>" + (fftot3).toLocaleString() + "</th><th>" + (fftot2).toLocaleString() + "</th></tr>";
   billsHTML3 += "<tr style='background:Black'><th>&nbsp;</th><th>&nbsp;<th>&nbsp;</th><th>&nbsp;</th></tr>";
