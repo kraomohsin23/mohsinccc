@@ -113,9 +113,12 @@ function generateMeters() {
     if(meterName.startsWith("CC")) {
       //sum for cc
       csum = result.amount + csum;
-      console.log(result.month);
+      console.log("the result.month = " + result.month);
+      //console.log(result.month);
+      console.log("the result.monthNames = " + result.monthNames);
       console.log(result.monthNames);
       let nmonthname = getNextMonthName(result.monthNames,new Date().getFullYear()%100);
+      console.log("nmonthname=");
       console.log(nmonthname);
       let hjs = JSON.parse(localStorage.getItem(meterName+"_"+nmonthname)) || [];
       //JSON.parse(localStorage.getItem("CCM_Aug 25")) || [];
@@ -131,7 +134,7 @@ function generateMeters() {
       //sum for msum
       msum = result.amount + msum;
     }
-    b += `<td onclick="showMonthsForMeter('${meterName}')">${meterName} <br>${result.month} ${result.amount.toLocaleString()}</td>`;
+    b += `<td onclick="showMonthsForMeter('${meterName}')">${meterName} <br>${result.monthNames} ${result.amount.toLocaleString()}</td>`;
   }); 
   b += "</tr>";
   b += "<tr><td>Total</td><td>Meter<br>" + msum.toLocaleString() + "</td><td></td>";
@@ -452,9 +455,9 @@ function showMonthsForMeter(meterName) {
   nextMonthBillDate.setMonth(nextMonthBillDate.getMonth() + 1);
   let diffdays = datediffdays(stdate,new Date(nextMonthBillDate));
   let diffdays2 = datediffdays(new Date(nextMonthBillDate),new Date());
-  console.log("i am here the value of diffdays is " + diffdays2);
-  console.log("the value of start date is " + new Date());
-  console.log("the value of nextMonthBillDate date is " + new Date(nextMonthBillDate));
+  //console.log("i am here the value of diffdays is " + diffdays2);
+  //console.log("the value of start date is " + new Date());
+  //console.log("the value of nextMonthBillDate date is " + new Date(nextMonthBillDate));
   nextMonthBillDate = formatDateTime(nextMonthBillDate,1);
   todaydate = new Date();
   todaydate = formatDateTime(todaydate,1);
@@ -975,6 +978,7 @@ function generateGraph(mname, curvalue, curmonname) {
   let mainGraph = document.getElementById("tgraphs");
   let mainGraphtext = "<table><tr><th>Consumption & Amount History for "+getFullMeterName(mname)+"</th></tr><tr>"
   let graphHTML = "<td><div id='tgraph2'>";
+  let graphHTML22 = "<td><div id='tgraph2'>";
   let i = 0;
   let maxConsumption = Math.max(...allBills
     .filter(bb => bb.tid.split('_')[0] === mname)
@@ -984,8 +988,11 @@ function generateGraph(mname, curvalue, curmonname) {
   //so that prediction graph will be align.
   allBills.forEach((bb, index) => {
     let bmname = bb.tid.split('_')[1];
+    console.log("i am in generate Graph method the value of bmname = " + bmname);
     if (bb.tid.split('_')[0] === mname) {
       barHeight = (bb.consumption/maxConsumption)*300;
+      if(barHeight==0) return;
+      barHeight = barHeight<49 ? 51 : barHeight;
       graphHTML += `
         <div class="graph-bar" style="height:${barHeight}px; background-color:${mncolors[i % mncolors.length]};">
           <span class="bar-label2">${bmname.split(' ')[0]}</span>
@@ -993,6 +1000,9 @@ function generateGraph(mname, curvalue, curmonname) {
           <span class="bar-label3" style="margin-bottom:${barHeight}px;">${bb.amount.toLocaleString()}</span>
         </div>`;
       i++;
+      console.log("the mname value = " + mname);
+      console.log("bmname.split(' ')[0]" + bmname.split(' ')[0]);
+      console.log("the barHeight value = " + barHeight);
     }
   });
 
@@ -1005,7 +1015,8 @@ function generateGraph(mname, curvalue, curmonname) {
       <span class="bar-label3" style="margin-bottom:${barHeight}px;">${calculateAmount(curvalue)}</span>
     </div>`;
   graphHTML += "</div></td>";
-  mainGraphtext += graphHTML;
+  //graphHTML22 += "</div></td>";
+  mainGraphtext += graphHTML;// + graphHTML22;
   mainGraphtext += "</tr></table>";
   mainGraph.innerHTML = mainGraphtext + `<button onclick=convertToPDF('3')>To PDF</button><br>`;
   mykey_bnm = addWidthToStyle(mainGraphtext, mname);
@@ -1526,8 +1537,8 @@ function viewAmount() {
   let fftot3 = Math.round(fftot/3);
   billsHTML += "<tr></tr>";
   billsHTML += "<tr style='background:Red'><th>Total Bill</th><th>"+ fftot.toLocaleString() +"</th><th>" + ftot.toLocaleString() + "<th>" + ftot.toLocaleString() + "</th><th>" + ftot.toLocaleString() + "</th></tr>";
-  billsHTML += "<tr style='background:darkgreen'><th>Total Payment</th><th></th><th>" + (atot).toLocaleString() + "<th>" + (btot).toLocaleString() + "</th><th>" + (ztot).toLocaleString() + "</th></tr>";
-  billsHTML += "<tr style='background:Black'><th>Balance</th><th></th><th>" + (ftot - atot).toLocaleString() + "<th>" + (ftot - btot).toLocaleString() + "</th><th>" + (ftot - ztot).toLocaleString() + "</th></tr>";
+  billsHTML += "<tr style='background:darkgreen'><th>Total Payment</th><th>"+(atot+btot+ztot).toLocaleString()+"</th><th>" + (atot).toLocaleString() + "<th>" + (btot).toLocaleString() + "</th><th>" + (ztot).toLocaleString() + "</th></tr>";
+  billsHTML += "<tr style='background:Black'><th>Balance</th><th>"+(fftot-(atot+btot+ztot)).toLocaleString()+"</th><th>" + (ftot - atot).toLocaleString() + "<th>" + (ftot - btot).toLocaleString() + "</th><th>" + (ftot - ztot).toLocaleString() + "</th></tr>";
   billsHTML += "</table></div>";
   billsHTML3 += "<tr style='background:Red'><th>Total Bill</th><th>" + fftot.toLocaleString() + "<th>" + (fftot3).toLocaleString() + "</th><th>" + (fftot2).toLocaleString() + "</th></tr>";
   billsHTML3 += "<tr style='background:Black'><th>&nbsp;</th><th>&nbsp;<th>&nbsp;</th><th>&nbsp;</th></tr>";
