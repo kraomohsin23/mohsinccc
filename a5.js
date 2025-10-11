@@ -165,8 +165,8 @@ function getLatestMonthAndAmount(meterName) {
 
   // Extract month name from billDate
   const date = new Date(latestBill.billDate);
-  const monthName = date.toLocaleString('default', { month: 'long' });
-  const monthNames = date.toLocaleString('default', { month: 'short' });
+  const monthName = date.toLocaleString('en-US', { month: 'long' });
+  const monthNames = date.toLocaleString('en-US', { month: 'short' });
 
   return {
     meter: meterName,
