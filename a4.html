@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>CSV Upload & Group By</title>
+    <title>CSV/XLS Upload & Group By</title>
     <style>
         table {
             border-collapse: collapse;
@@ -28,38 +28,59 @@
 
 <body>
 
-<h2>Upload CSV File</h2>
-
-<input type="file" id="csvFile" accept=".csv" />
+<h2>Upload CSV or Excel File</h2>
+<input type="file" id="csvFile" accept=".csv,.xls,.xlsx" />
 <div id="groupDiv"></div>
 <table id="csvTable"></table>
 <button id="downloadBtn">Download Grouped CSV</button>
 
-<script>
-    let originalData = [];   // all CSV rows except header
-    let headers = [];        // header row
-    let groupedDataForDownload = []; // save grouped data for download
+<!-- SheetJS library -->
+<script src="xlsx.full.min.js"></script>
 
-    // CSV file upload
+<script>
+    let originalData = [];   // all rows except header
+    let headers = [];        // header row
+    let groupedDataForDownload = []; // grouped data for download
+
+    // File upload handler
     document.getElementById('csvFile').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
 
+        const ext = file.name.split('.').pop().toLowerCase();
         const reader = new FileReader();
-        reader.onload = function(e) {
-            const text = e.target.result.trim();
-            const rows = text.split("\n").map(r => r.split(","));
 
-            headers = rows[0];
-            originalData = rows.slice(1);
-
-            displayTable(headers, originalData);
-            createGroupByDropdown(headers);
-        };
-        reader.readAsText(file);
+        if(ext === "csv") {
+            reader.onload = function(e) {
+                const text = e.target.result.trim();
+                const rows = text.split("\n").map(r => r.split(","));
+                headers = rows[0];
+                originalData = rows.slice(1);
+                displayTable(headers, originalData);
+                createGroupByDropdown(headers);
+            };
+            reader.readAsText(file);
+        }
+        else if(ext === "xls" || ext === "xlsx") {
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, {type: 'array'});
+                const firstSheetName = workbook.SheetNames[0];
+                const worksheet = workbook.Sheets[firstSheetName];
+                const json = XLSX.utils.sheet_to_json(worksheet, {header:1});
+                headers = json[0];
+                originalData = json.slice(1);
+                displayTable(headers, originalData);
+                createGroupByDropdown(headers);
+            };
+            reader.readAsArrayBuffer(file);
+        }
+        else {
+            alert("Unsupported file format! Please upload CSV or XLS/XLSX.");
+        }
     });
 
-    // Display full CSV table
+    // Display full table
     function displayTable(headers, data) {
         let html = "<tr>";
         headers.forEach(h => html += "<th>" + h + "</th>");
@@ -79,11 +100,9 @@
         let html = "<label><b>Group By:</b></label> ";
         html += "<select id='groupBySel'>";
         html += "<option value=''>-- Select Column --</option>";
-
         headers.forEach((h, idx) => {
             html += "<option value='" + idx + "'>" + h + "</option>";
         });
-
         html += "</select>";
         document.getElementById("groupDiv").innerHTML = html;
 
@@ -101,7 +120,7 @@
     // Group by selected column and count
     function groupByColumn(colIndex) {
         const map = {};
-        groupedDataForDownload = []; // reset
+        groupedDataForDownload = [];
 
         originalData.forEach(row => {
             const key = row[colIndex];
@@ -116,13 +135,10 @@
 
         Object.keys(map).forEach(group => {
             const count = map[group].length;
-
             html += `<tr>
                 <th style="background:#d9edf7">${group}</th>
                 <td>${count}</td>
             </tr>`;
-
-            // Save grouped data for download
             groupedDataForDownload.push([group, count]);
         });
 
@@ -136,9 +152,10 @@
             return;
         }
 
-        let csvContent = "data:text/csv;charset=utf-8,";
-        csvContent += headers[document.getElementById('groupBySel').value] + ",Count\n"; // header
+        const colIndex = document.getElementById('groupBySel').value;
+        const groupedHeader = headers[colIndex];
 
+        let csvContent = "data:text/csv;charset=utf-8," + groupedHeader + ",Count\n";
         groupedDataForDownload.forEach(rowArray => {
             csvContent += rowArray.join(",") + "\r\n";
         });
@@ -147,11 +164,10 @@
         const link = document.createElement("a");
         link.setAttribute("href", encodedUri);
         link.setAttribute("download", "grouped_data.csv");
-        document.body.appendChild(link); // required for Firefox
+        document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
     });
-
 </script>
 
 </body>
