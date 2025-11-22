@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>CSV Upload & Group By</title>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #444;
+            padding: 6px;
+            text-align: left;
+        }
+        th {
+            background: #eee;
+        }
+        #groupDiv {
+            margin-top: 20px;
+        }
+        #downloadBtn {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Upload CSV File</h2>
+
+<input type="file" id="csvFile" accept=".csv" />
+<div id="groupDiv"></div>
+<table id="csvTable"></table>
+<button id="downloadBtn">Download Grouped CSV</button>
+
+<script>
+    let originalData = [];   // all CSV rows except header
+    let headers = [];        // header row
+    let groupedDataForDownload = []; // save grouped data for download
+
+    // CSV file upload
+    document.getElementById('csvFile').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const text = e.target.result.trim();
+            const rows = text.split("\n").map(r => r.split(","));
+
+            headers = rows[0];
+            originalData = rows.slice(1);
+
+            displayTable(headers, originalData);
+            createGroupByDropdown(headers);
+        };
+        reader.readAsText(file);
+    });
+
+    // Display full CSV table
+    function displayTable(headers, data) {
+        let html = "<tr>";
+        headers.forEach(h => html += "<th>" + h + "</th>");
+        html += "</tr>";
+
+        data.forEach(row => {
+            html += "<tr>";
+            row.forEach(col => html += "<td>" + col + "</td>");
+            html += "</tr>";
+        });
+
+        document.getElementById("csvTable").innerHTML = html;
+    }
+
+    // Create dropdown for grouping
+    function createGroupByDropdown(headers) {
+        let html = "<label><b>Group By:</b></label> ";
+        html += "<select id='groupBySel'>";
+        html += "<option value=''>-- Select Column --</option>";
+
+        headers.forEach((h, idx) => {
+            html += "<option value='" + idx + "'>" + h + "</option>";
+        });
+
+        html += "</select>";
+        document.getElementById("groupDiv").innerHTML = html;
+
+        document.getElementById("groupBySel").addEventListener("change", function() {
+            const colIndex = this.value;
+            if (colIndex === "") {
+                displayTable(headers, originalData);
+                groupedDataForDownload = [];
+                return;
+            }
+            groupByColumn(parseInt(colIndex));
+        });
+    }
+
+    // Group by selected column and count
+    function groupByColumn(colIndex) {
+        const map = {};
+        groupedDataForDownload = []; // reset
+
+        originalData.forEach(row => {
+            const key = row[colIndex];
+            if (!map[key]) map[key] = [];
+            map[key].push(row);
+        });
+
+        let html = `<tr>
+            <th>${headers[colIndex]} (Grouped)</th>
+            <th>Count</th>
+        </tr>`;
+
+        Object.keys(map).forEach(group => {
+            const count = map[group].length;
+
+            html += `<tr>
+                <th style="background:#d9edf7">${group}</th>
+                <td>${count}</td>
+            </tr>`;
+
+            // Save grouped data for download
+            groupedDataForDownload.push([group, count]);
+        });
+
+        document.getElementById("csvTable").innerHTML = html;
+    }
+
+    // Download grouped data as CSV
+    document.getElementById("downloadBtn").addEventListener("click", function() {
+        if (groupedDataForDownload.length === 0) {
+            alert("No grouped data to download.");
+            return;
+        }
+
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += headers[document.getElementById('groupBySel').value] + ",Count\n"; // header
+
+        groupedDataForDownload.forEach(rowArray => {
+            csvContent += rowArray.join(",") + "\r\n";
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "grouped_data.csv");
+        document.body.appendChild(link); // required for Firefox
+        link.click();
+        document.body.removeChild(link);
+    });
+
+</script>
+
+</body>
+</html>
