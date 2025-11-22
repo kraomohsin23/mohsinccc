@@ -26,9 +26,9 @@
             line-height: 1.6;
         }
 
-        .container { max-width: 1000px; margin: 0 auto; }
+        .container { max-width: device-width; margin: 0 auto; }
         .card {
-            background: white;
+            background: rgb(45, 2, 126);
             border-radius: 12px;
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
             padding: 20px;
@@ -130,7 +130,7 @@
 
 <div class="container">
     <div class="card">
-        <h2>Smart CSV / Excel Group Analyzer</h2>
+        <h2 style="color: red;">Upload file CSV, XLS or XLSX</h2>
 
         <div class="upload-area" id="uploadArea">
             <p><strong>Click or drop a file here</strong><br>Supports .csv, .xls, .xlsx</p>
@@ -144,7 +144,7 @@
 
         <div class="controls" id="groupDiv" style="display:none;">
             <div>
-                <label><strong>Group By Column:</strong></label><br>
+                <label><strong style="color: red;">Group By Column:</strong></label><br>
                 <select id="groupBySel">
                     <option value="">-- Select Column to Group --</option>
                 </select>
