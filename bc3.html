@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart CSV/XLSX Group Analyzer</title>
+    <script src="xlsx.full.min.js"></script>
+
+    <style>
+        :root {
+            --primary: #4361ee;
+            --primary-light: #e0e7ff;
+            --success: #06d6a0;
+            --gray: #6c757d;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --border: #dee2e6;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f0f2f5;
+            color: var(--dark);
+            padding: 15px;
+            line-height: 1.6;
+        }
+
+        .container { max-width: 1000px; margin: 0 auto; }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        h2 { color: var(--primary); margin-bottom: 16px; font-size: 1.Direct5rem; }
+
+        .upload-area {
+            border: 2px dashed var(--primary);
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            background: var(--primary-light);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .upload-area:hover { background: #c9d5ff; border-color: #2a4cff; }
+        .upload-area.dragover { background: #a8c0ff; }
+
+        #csvFile { display: none; }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin: 8px 4px;
+            transition: 0.3s;
+        }
+        .btn-primary { color: white; }
+        .btn-primary:hover { background: #334fd4; }
+        .btn-success { background: var(--success); color: white; }
+        .btn-success:hover { background: #05b080; }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        select {
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            min-width: 220px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        th {
+            background: var(--primary);
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        tr:hover { background: #f5f8ff; }
+
+        .group-header th {
+            background: #a0d8ef !important;
+            font-weight: bold;
+            color: #1a1a1a;
+        }
+
+        #downloadSection { text-align: center; margin-top: 20px; }
+
+        @media (max-width: 640px) {
+            .controls { flex-direction: column; align-items: stretch; }
+            select, .btn { width: 100%; }
+            h2 { font-size: 1.4rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>Smart CSV / Excel Group Analyzer</h2>
+
+        <div class="upload-area" id="uploadArea">
+            <p><strong>Click or drop a file here</strong><br>Supports .csv, .xls, .xlsx</p>
+            <button class="btn btn-primary" onclick="document.getElementById('csvFile').click()">
+                Choose File
+            </button>
+            <p id="fileName" style="margin-top:12px; color:var(--gray); font-weight:500;"></p>
+        </div>
+
+        <input type="file" id="csvFile" accept=".csv,.xls,.xlsx" />
+
+        <div class="controls" id="groupDiv" style="display:none;">
+            <div>
+                <label><strong>Group By Column:</strong></label><br>
+                <select id="groupBySel">
+                    <option value="">-- Select Column to Group --</option>
+                </select>
+            </div>
+            <button id="resetBtn" class="btn btn-primary">Show Original Table</button>
+        </div>
+
+        <div class="table-container" id="tableContainer" style="display:none;">
+            <table id="csvTable"></table>
+        </div>
+
+        <div id="downloadSection" style="display:none;">
+            <button id="downloadBtn" class="btn btn-success">Download Grouped CSV</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let originalData = [];
+    let headers = [];
+    let groupedDataForDownload = [];
+    let currentFileName = "";
+
+    const fileInput = document.getElementById('csvFile');
+    const uploadArea = document.getElementById('uploadArea');
+    const fileNameDisplay = document.getElementById('fileName');
+
+    // Drag & Drop
+    ['dragenter', 'dragover'].forEach(ev => uploadArea.addEventListener(ev, e => { e.preventDefault(); uploadArea.classList.add('dragover'); }));
+    ['dragleave', 'drop'].forEach(ev => uploadArea.addEventListener(ev, e => { e.preventDefault(); uploadArea.classList.remove('dragover'); }));
+
+    uploadArea.addEventListener('drop', e => {
+        if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+    });
+
+    fileInput.addEventListener('change', e => {
+        if (e.target.files.length) handleFile(e.target.files[0]);
+    });
+
+    function handleFile(file) {
+        currentFileName = file.name;
+        fileNameDisplay.textContent = `Loaded: ${file.name}`;
+        const ext = file.name.split('.').pop().toLowerCase();
+
+        if (ext === "csv") {
+            const reader = new FileReader();
+            reader.onload = e => parseCSV(e.target.result);
+            reader.readAsText(file);
+        } else if (["xls", "xlsx"].includes(ext)) {
+            const reader = new FileReader();
+            reader.onload = e => parseExcel(e.target.result);
+            reader.readAsArrayBuffer(file);
+        } else {
+            alert("Please upload a CSV or Excel file.");
+        }
+    }
+
+    function parseCSV(text) {
+        let lines = text.trim().split("\n").map(line => line.split(",").map(c => c.trim().replace(/^"|"$/g, '')));
+        
+        // Smart detection: if first cell is "Customer Msisdn" → skip first 2 rows
+        const firstCell = lines[0][0]?.trim();
+        let startRow = 0;
+
+        if (firstCell && firstCell.toLowerCase().includes("customer msisdn")) {
+            startRow = 5; // skip row 0 and 1 → headers are on row 2 (index 2)
+            console.log("Detected 'Customer Msisdn' report → skipping first 2 rows");
+        }
+
+        headers = lines[startRow];
+        originalData = lines.slice(startRow + 1).filter(row => row.some(cell => cell !== ""));
+
+        renderTable(headers, originalData);
+        createGroupDropdown();
+    }
+
+    function parseExcel(buffer) {
+        const workbook = XLSX.read(buffer, {type: 'array'});
+        const sheet = workbook.Sheets[workbook.SheetNames[0]];
+        const json = XLSX.utils.sheet_to_json(sheet, {header: 1, defval: ""});
+
+        let startRow = 0;
+        const firstCell = json[0]?.[0]?.toString().trim();
+
+        if (firstCell && firstCell.toLowerCase().includes("customer msisdn")) {
+            startRow = 5;
+            console.log("Excel: Detected 'Customer Msisdn' → starting from row 3");
+        }
+
+        headers = json[startRow];
+        originalData = json.slice(startRow + 1).filter(row => row.some(cell => cell !== "" && cell !== null));
+
+        renderTable(headers, originalData);
+        createGroupDropdown();
+    }
+
+    function renderTable(headerRow, dataRows) {
+        let html = "<tr>" + headerRow.map(h => `<th>${h || '—'}</th>`).join("") + "</tr>";
+        dataRows.forEach(row => {
+            html += "<tr>" + row.map(cell => `<td>${cell ?? ''}</td>`).join("") + "</tr>";
+        });
+
+        document.getElementById("csvTable").innerHTML = html;
+        document.getElementById("tableContainer").style.display = "block";
+        document.getElementById("groupDiv").style.display = "flex";
+    }
+
+    function createGroupDropdown() {
+        const sel = document.getElementById("groupBySel");
+        sel.innerHTML = `<option value="">-- Select Column to Group --</option>`;
+        headers.forEach((h, i) => {
+            //console.log("the lenght of h is " + h.length);
+            if(h.length > 0) {
+            const opt = new Option(h, i);
+            //var sel2 = "<option value='" + i + "'>" + h + "</option>";
+            sel.appendChild(opt);
+            }
+        });
+
+        sel.onchange = () => {
+            const idx = sel.value;
+            if (!idx) {
+                renderTable(headers, originalData);
+                groupedDataForDownload = [];
+                document.getElementById("downloadSection").style.display = "none";
+            } else {
+                groupByColumn(parseInt(idx));
+            }
+        };
+
+        document.getElementById("resetBtn").onclick = () => {
+            sel.value = "";
+            renderTable(headers, originalData);
+            groupedDataForDownload = [];
+            document.getElementById("downloadSection").style.display = "none";
+        };
+    }
+
+    function groupByColumn(colIndex) {
+        const map = {};
+        originalData.forEach(row => {
+            const key = row[colIndex] ?? "(empty)";
+            console.log("the value of key is " + key);
+            if(key.length > 8)
+            map[key] = (map[key] || 0) + 1;
+        });
+
+        const sorted = Object.entries(map)
+            .sort((a, b) => b[1] - a[1]);
+
+        let html = `<tr><th>${headers[colIndex] || 'Group'}</th><th>Count</th></tr>`;
+        groupedDataForDownload = [["Group", "Count"]];
+
+        sorted.forEach(([group, count]) => {
+            html += `<tr class="group-header"><th>${group}</th><td><strong>${count}</strong></td></tr>`;
+            groupedDataForDownload.push([group, count]);
+        });
+
+        document.getElementById("csvTable").innerHTML = html;
+        document.getElementById("downloadSection").style.display = "block";
+    }
+
+    // Download grouped CSV
+    document.getElementById("downloadBtn").onclick = () => {
+        if (groupedDataForDownload.length <= 1) return alert("No data to download");
+
+        const csv = groupedDataForDownload
+            .map(row => row.map(c => `"${c}"`).join(","))
+            .join("\r\n");
+
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `${currentFileName.split('.').shift()}_grouped_by_${headers[document.getElementById('groupBySel').value] || 'column'}.csv`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+</script>
+
+</body>
+</html>
