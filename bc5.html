@@ -302,7 +302,15 @@
             //if (key.trim().length > 8) {
             //if (!key.matches("\\d{10,}")) {
             if (/^\d{10,12}$/.test(k)) {
-            map[key] = (map[key] || 0) + 1;
+                if(k.startsWith("92")) {
+                    console.log('start with 92 is true');
+                    k = k.substr(2,10)
+                }
+                if(k.startsWith("0")) {
+                    console.log('start with 0 is true');
+                    k = k.substr(1,10);
+                }
+            map[k] = (map[k] || 0) + 1;
             }
         });
 
