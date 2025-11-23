@@ -160,6 +160,7 @@
 
         <div id="downloadSection" style="display:none;">
             <button id="downloadBtn" class="btn btn-success">Download Grouped CSV</button>
+            <button id="downloadBtnXLS" class="btn btn-success">Download Grouped XLS</button>
         </div>
     </div>
 </div>
@@ -336,6 +337,26 @@
         a.click();
         URL.revokeObjectURL(url);
     };
+
+
+
+    //Donlod xls file
+    document.getElementById("downloadBtnXLS").onclick = () => {
+    if (groupedDataForDownload.length <= 1) {
+        return alert("No data to download");
+    }
+
+    let wb = XLSX.utils.book_new();              // Create workbook
+    let ws = XLSX.utils.aoa_to_sheet(groupedDataForDownload); // Convert array to sheet
+
+    XLSX.utils.book_append_sheet(wb, ws, "Grouped Data");
+
+    let fileName = `${currentFileName.split('.').shift()}_grouped_by_${headers[document.getElementById('groupBySel').value] || 'column'}.xlsx`;
+
+    XLSX.writeFile(wb, fileName);   // Save Excel file
+    };
+
+
 </script>
 
 </body>
