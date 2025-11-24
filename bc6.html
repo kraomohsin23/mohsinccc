@@ -152,15 +152,15 @@
             </div>
             <button id="resetBtn" class="btn btn-primary">Show Original Table</button>
             <h3 id="h3totalrec"></h3>
+            <div id="downloadSection" style="display:none;">
+                <button id="downloadBtn" class="btn btn-success">Download Grouped CSV</button>
+                <button id="downloadBtnXLS" class="btn btn-success">Download Grouped XLS</button>
+                <button id="copyBtn" class="btn btn-success">Copy to Clipboard</button>
+            </div>
         </div>
 
         <div class="table-container" id="tableContainer" style="display:none;">
             <table id="csvTable"></table>
-        </div>
-
-        <div id="downloadSection" style="display:none;">
-            <button id="downloadBtn" class="btn btn-success">Download Grouped CSV</button>
-            <button id="downloadBtnXLS" class="btn btn-success">Download Grouped XLS</button>
         </div>
     </div>
 </div>
@@ -310,8 +310,8 @@
                     console.log('start with 0 is true');
                     k = k.substr(1,10);
                 }
-                else {
-                    console.log("else is true not starting with 92 or 0");
+                else if(!k.startsWith("3")){
+                    console.log("else if is true not starting with 92 or 0 or 3 then ");
                     k = k.substr(1,10);
                 }
             map[k] = (map[k] || 0) + 1;
@@ -330,6 +330,7 @@
         });
 
         document.getElementById("csvTable").innerHTML = html;
+        //document.getElementById("csvTable").innerHTML = html;
         document.getElementById("downloadSection").style.display = "block";
     }
 
@@ -366,6 +367,28 @@
     let fileName = `${currentFileName.split('.').shift()}_grouped_by_${headers[document.getElementById('groupBySel').value] || 'column'}.xlsx`;
 
     XLSX.writeFile(wb, fileName);   // Save Excel file
+    };
+
+
+    //copy data
+    // Copy grouped data to clipboard
+    document.getElementById("copyBtn").onclick = async () => {
+        if (groupedDataForDownload.length <= 1) {
+            return alert("No data to copy!");
+        }
+
+        // Convert to tab-separated values (best for Excel paste)
+        let text = groupedDataForDownload
+            .map(row => row.join("\t"))
+            .join("\n");
+
+        try {
+            await navigator.clipboard.writeText(text);
+            alert("Grouped data copied to clipboard!");
+        } catch (err) {
+            console.error(err);
+            alert("Failed to copy. Your browser may not support clipboard API.");
+        }
     };
 
 
