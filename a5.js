@@ -27,6 +27,8 @@ var sbb = 3; //space b.w bars usd in asd func
 var wd = 15; //bar width usd in asd func
 var fsize = 11; //bar width usd in asd func
 var currx = 0; //current x position usd in asd func
+var nextmonth; //used in 27-nov-2025 code Mon year like Dec 24 format
+
 
 
 
@@ -113,16 +115,17 @@ function generateMeters() {
     if(meterName.startsWith("CC")) {
       //sum for cc
       csum = result.amount + csum;
-      console.log("the result.month = " + result.month);
+      console.log("for meter " + meterName +" the result.month = " + result.month);
       //console.log(result.month);
-      console.log("the result.monthNames = " + result.monthNames);
+      console.log("for meter " + meterName +"the result.monthNames = " + result.monthNames);
       console.log(result.monthNames);
-      let nmonthname = getNextMonthName(result.monthNames,new Date().getFullYear()%100);
+      //let nmonthname = getNextMonthName(result.monthNames,new Date().getFullYear()%100);
+      let nmonthname = getNextMonthName(result.monthNames,result.yearName);
       console.log("nmonthname=");
       console.log(nmonthname);
       let hjs = JSON.parse(localStorage.getItem(meterName+"_"+nmonthname)) || [];
       //JSON.parse(localStorage.getItem("CCM_Aug 25")) || [];
-      console.log(hjs);
+      console.log("the value of hjs = " + hjs);
       
       let nhb1 = hjs.length > 0 ?  hjs[hjs.length -1].units : 0;
       console.log(nhb1);
@@ -145,6 +148,8 @@ function generateMeters() {
   //b += "this is from mohsin rao csum = " + csum + " and for msum = " + msum;
   //b += "the next month cc sum is " + nmccsum;
   a.innerHTML = b;
+  //nextmonth = getNextMonthName(result.monthName,result.yearName);
+  console.log("the nextmonth name is : " + nextmonth);
 }
 
 //get highest month and it's attributes to print at the top of the page
@@ -167,12 +172,15 @@ function getLatestMonthAndAmount(meterName) {
   const date = new Date(latestBill.billDate);
   const monthName = date.toLocaleString('en-US', { month: 'long' });
   const monthNames = date.toLocaleString('en-US', { month: 'short' });
+  const yearName = date.getFullYear();
+  console.log("the yearName = " + yearName);
 
   return {
     meter: meterName,
     month: monthName,
     amount: latestBill.amount
     ,monthNames : monthNames
+    ,yearName : yearName
   };
 }
 //end chatGpt 16 Jun 25 7:41 PM
@@ -407,7 +415,7 @@ function showMonthsForMeter(meterName) {
   let motest4 = 0;
   let motest5 = 0;
   let ccms_totunits = 0;
-  let tdexpectedconshalf = 0;
+  let showallbtn = "<button onclick=\"toggleCloseBoxes()\">Toggle Close-Box</button>";
   let tdexpectedcons = 0;
   let tcurmonname = "";
   btext = `<h5>Months for Meter: ${meterName}</h5>`;
@@ -430,7 +438,6 @@ function showMonthsForMeter(meterName) {
   let monthclosedname = "open";
   allBills.forEach(aaa => {
     if(aaa.tid==meterName + "_"+monthName) {
-      let hy = datediffdays(stdate,endate);
       monthclosedname = "closed";
       monthclosedname += "<br>Amount :" + aaa.amount;
       monthclosedname += "<br>Consumption :" + aaa.consumption;
@@ -438,9 +445,7 @@ function showMonthsForMeter(meterName) {
       monthclosedname += "<br>Bill Date :" + formatDateTime(aaa.billDate,1);
       monthclosedname += "<br>Start Date :" + formatDateTime(new Date(stdate),1);
       monthclosedname += "<br>End Date :" + formatDateTime(new Date(endate),1);
-      // monthclosedname += "<br>Days :" + distinctDates.size;
       monthclosedname += "<br>"+nodays;
-      // monthclosedname += "<br>Average :" + (aaa.consumption/distinctDates.size).toFixed(2);
       monthclosedname += "<br>Average:" + perdayavg;
       lastbill = aaa.tid;
     }
@@ -516,7 +521,7 @@ function showMonthsForMeter(meterName) {
     `;
   }
   });
-  content.innerHTML = btext;
+  content.innerHTML = showallbtn + "<br>" +  btext + "<br>";
   content.innerHTML += "<br><br>fd<br><br>";
   if(meterName == "Gas") {
     //use not half let tdexpectedcons
@@ -540,6 +545,21 @@ function showMonthsForMeter(meterName) {
       generateGraph(meterName,0,tcurmonname);
     }
   }
+}
+
+
+function toggleCloseBoxes() {
+  const boxes = document.querySelectorAll(".close-box");
+  console.log("the boxes.lenght is " + boxes.length);
+
+  boxes.forEach(box => {
+    console.log("box style display = " + box.style.display);
+      if (box.style.display === "none" || box.style.display === "") {
+          box.style.display = "block";
+      } else {
+          box.style.display = "none";
+      }
+  });
 }
 
 
