@@ -222,14 +222,6 @@ tr:nth-child(even) {
 }
 
 
-.close-box {
-    background-color: rgb(243, 105, 220);
-    color: black;
-    border: 5px solid white;
-    display: inline-block;
-    margin: 8px;
-    padding: 30px 30px 30px 30px;
-}
 /* Main Wrapper */
 .wrapper {
     display: flex;
@@ -703,6 +695,7 @@ tr:nth-child(even) {
     display: inline-block;
     margin: 8px;
     padding: 30px 30px 30px 30px;
+    display: none;
 }
 /* Main Wrapper */
 .wrapper {
